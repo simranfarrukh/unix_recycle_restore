@@ -1,6 +1,5 @@
 #!/bin/bash
 # @author Simran Farrukh
-# script name recycle. stored in $HOME/project
 # recycle bin is in $HOME/recyclebin
 
 # following script creates recyclebin directory
