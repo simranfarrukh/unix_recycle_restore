@@ -1,0 +1,41 @@
+#!/bin/bash
+# script name restore. stored in $HOME/project
+
+# following script will check if filename is provided as an argument
+if [ $# -eq 0 ]
+then
+        echo "No filename provided"
+        exit 1
+
+        # following script will check if file exists
+        elif [ ! -e $HOME/recyclebin/$1 ]
+        then
+                echo "File does not exist"
+                exit 1
+fi
+
+# file is restored to its original location
+# using pathname stored in .restor.info in $HOME
+filepath_dir=$(grep $1 $HOME/.restore.info | cut -d ":" -f2)
+filepath=$(readlink -f $filepath_dir)
+
+        # following script checks whether file already exists in target directory
+        if [ -e $filepath_dir ]
+        then
+                read -p "Do you want to overwrite? y/n" # asks input Y/y or N/n
+                case $answer in
+                y|Y|yes|YES) mv $HOME/recyclebin/$1 filepath
+                        grep -v $1 $HOME.restore.info > $HOME/.restorebin.info
+                        mv $HOME/.restorebin.info $HOME/.restore.info
+                        echo "Your requested file overwritten and restored!"
+                        exit 0;;
+                n|*)
+                        echo "OK"
+                        exit 0;;
+                esac
+        else # in case such a file doesn't exist in the directory
+                mv $HOME/recyclebin/$1 $filepath
+                grep -v $1 $HOME/.restore.info > $HOME/.restorebin.info
+                mv $HOME/.restorebin.info $HOME/.restore.info
+                echo "DONE!"
+fi
