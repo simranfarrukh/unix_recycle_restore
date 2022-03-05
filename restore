@@ -1,6 +1,5 @@
 #!/bin/bash
 # @author Simran Farrukh
-# script name restore. stored in $HOME/project
 
 # following script will check if filename is provided as an argument
 if [ $# -eq 0 ]
