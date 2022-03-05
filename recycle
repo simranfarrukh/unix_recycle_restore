@@ -1,0 +1,47 @@
+#!/bin/bash
+# script name recycle. stored in $HOME/project
+# recycle bin is in $HOME/recyclebin
+
+# following script creates recyclebin directory
+if [ ! -d $HOME/recyclebin ]
+then
+        mkdir $HOME/recyclebin
+fi
+
+# following script tests if filename is provided as an argument
+if [ $# -eq 0 ]
+then
+        echo "No filename provided"
+        exit 1
+
+        # following script tests if file supplied exists
+        elif [ ! -e $1 ]
+        then
+                echo "File does not exist"
+                exit 1
+
+        # following script gives an error if directory is provided instead
+        # instead of a file name
+        elif [ -d $1 ]
+        then
+                echo "Directory name provided"
+                exit 1
+
+        # following script gives an error if recycle script is deleted
+        elif echo $1 | grep -q "recycle"
+        then
+                echo "Attempting to delete recycle - Operation Aborted"
+                exit 1
+
+# following script sends fileName to recyclebin in required format
+else
+        file_inode=$(ls -i $1 | cut -d " " -f1) # file inode
+        file_name=$(basename $1) # file name
+        file_new_name=$file_name"_"$file_inode # filename_inode
+        pathname=$(readlink -f $1)
+mv $1 $file_new_name
+mv $file_new_name $HOME/recyclebin
+
+# following script creates hidden file called .restore.info in $HOME
+echo $file_new_name':'$pathname >> $HOME/.restore.info
+fi
